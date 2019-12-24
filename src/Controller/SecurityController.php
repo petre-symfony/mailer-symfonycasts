@@ -10,6 +10,7 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\NamedAddress;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
@@ -74,12 +75,12 @@ class SecurityController extends AbstractController {
       $em->flush();
 
 	    $email = (new TemplatedEmail())
-	      ->from('alienmailer@example.com')
-	      ->to($user->getEmail())
+	      ->from(new NamedAddress('alienmailer@example.com', 'The Space Bar!'))
+	      ->to(new NamedAddress($user->getEmail(), $user->getFirstName()))
 	      ->subject('Welcome to the Space Bar!')
 		    ->htmlTemplate('email/welcome.html.twig')
 		    ->context([
-			    'user' => $user
+			    //'user' => $user
 		    ]);
 	    ;
 
