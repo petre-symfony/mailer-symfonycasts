@@ -78,6 +78,7 @@ class SecurityController extends AbstractController {
 	      ->to($user->getEmail())
 	      ->subject('Welcome to the Space Bar!')
 	      ->text("Nice to meet you {$user->getFirstName()}! ️❤️")
+		    ->html("<h1>Nice to meet you {$user->getFirstName()}! ️❤️</h1>")
 	    ;
 
 	    $mailer->send($email);
