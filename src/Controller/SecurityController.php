@@ -78,6 +78,9 @@ class SecurityController extends AbstractController {
 	      ->to($user->getEmail())
 	      ->subject('Welcome to the Space Bar!')
 		    ->htmlTemplate('email/welcome.html.twig')
+		    ->context([
+			    'user' => $user
+		    ]);
 	    ;
 
 	    $mailer->send($email);
