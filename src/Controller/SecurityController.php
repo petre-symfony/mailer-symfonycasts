@@ -81,7 +81,7 @@ class SecurityController extends AbstractController {
 	    ;
 
 	    $mailer->send($email);
-	    
+
       return $guardHandler->authenticateUserAndHandleSuccess(
         $user,
         $request,
