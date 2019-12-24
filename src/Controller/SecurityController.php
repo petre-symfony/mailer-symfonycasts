@@ -8,6 +8,8 @@ use App\Form\UserRegistrationFormType;
 use App\Security\LoginFormAuthenticator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Guard\GuardAuthenticatorHandler;
@@ -40,7 +42,13 @@ class SecurityController extends AbstractController {
   /**
    * @Route("/register", name="app_register")
    */
-  public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, GuardAuthenticatorHandler $guardHandler, LoginFormAuthenticator $formAuthenticator){
+  public function register(
+  	Request $request,
+	  UserPasswordEncoderInterface $passwordEncoder,
+	  GuardAuthenticatorHandler $guardHandler,
+	  LoginFormAuthenticator $formAuthenticator,
+		MailerInterface $mailer
+  ){
     $form = $this->createForm(UserRegistrationFormType::class);
     $form->handleRequest($request);
 
@@ -65,6 +73,15 @@ class SecurityController extends AbstractController {
       $em->persist($user);
       $em->flush();
 
+	    $email = (new Email())
+	      ->from('alienmailer@example.com')
+	      ->to($user->getEmail())
+	      ->subject('Welcome to the Space Bar!')
+	      ->text("Nice to meet you {$user->getFirstName()}! ️❤️")
+	    ;
+
+	    $mailer->send($email);
+	    
       return $guardHandler->authenticateUserAndHandleSuccess(
         $user,
         $request,
