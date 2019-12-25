@@ -284,6 +284,9 @@
             "ref": "0fa049c19069a65f52c1c181d64be3de672c1504"
         }
     },
+    "symfony/css-selector": {
+        "version": "v4.3.9"
+    },
     "symfony/debug": {
         "version": "v4.1.11"
     },
@@ -555,6 +558,12 @@
     },
     "symfony/yaml": {
         "version": "v4.1.11"
+    },
+    "tijsverkoyen/css-to-inline-styles": {
+        "version": "2.2.2"
+    },
+    "twig/cssinliner-extra": {
+        "version": "v3.0.0"
     },
     "twig/extensions": {
         "version": "1.0",
