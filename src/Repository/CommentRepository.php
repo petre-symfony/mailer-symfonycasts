@@ -5,8 +5,8 @@ namespace App\Repository;
 use App\Entity\Comment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\QueryBuilder;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * @method Comment|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Comment[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class CommentRepository extends ServiceEntityRepository {
-  public function __construct(RegistryInterface $registry) {
+  public function __construct(ManagerRegistry $registry) {
     parent::__construct($registry, Comment::class);
   }
 
