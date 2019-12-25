@@ -75,6 +75,7 @@ class AuthorWeeklyReportSendCommand extends Command {
 					'author' => $author,
 					'articles' => $articles
 				])
+				->attach($pdf, sprintf('weekly-report-%s.pdf', date('Y-m-d')));
 			;
 
 			$this->mailer->send($email);
