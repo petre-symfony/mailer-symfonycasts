@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Repository\UserRepository;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,28 +12,31 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AuthorWeeklyReportSendCommand extends Command {
 	protected static $defaultName = 'app:author-weekly-report:send';
+	private $userRepository;
 
 	protected function configure() {
 		$this
 			->setDescription('Send weekly reports to authors');
 	}
 
-	public function __construct(string $name = null) {
-		parent::__construct($name);
+	public function __construct(UserRepository $userRepository) {
+		parent::__construct(null);
+		$this->userRepository = $userRepository;
 	}
-	
+
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$io = new SymfonyStyle($input, $output);
-		$arg1 = $input->getArgument('arg1');
+		$authors = $this->userRepository
+			->findAllSubscribedToNewsletter();
 
-		if ($arg1) {
-			$io->note(sprintf('You passed an argument: %s', $arg1));
+		$io->progressStart(count($authors));
+
+		foreach ($authors as $author){
+			$io->progressAdvance();
 		}
 
-		if ($input->getOption('option1')) {
-			// ...
-		}
-
-		$io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+		$io->progressFinish();
+		
+		$io->success('weekly reports were sent to authors');
 	}
 }
