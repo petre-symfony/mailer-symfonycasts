@@ -17,6 +17,10 @@ class AuthorWeeklyReportSendCommand extends Command {
 			->setDescription('Send weekly reports to authors');
 	}
 
+	public function __construct(string $name = null) {
+		parent::__construct($name);
+	}
+	
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$io = new SymfonyStyle($input, $output);
 		$arg1 = $input->getArgument('arg1');
