@@ -2,6 +2,8 @@
 
 namespace App\Tests\Service;
 
+use App\Entity\User;
+use App\Service\Mailer;
 use Knp\Snappy\Pdf;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Mailer\MailerInterface;
@@ -18,7 +20,11 @@ class MailerTest extends TestCase {
 	  $twig = $this->createMock(Environment::class);
 	  $entrypointLookup = $this->createMock(EntrypointLookupInterface::class);
 
-	  $mailer = new Mailer($symfonyMailer, $twig, $pdf, $entrypointLookup);
+	  $user = new User();
+	  $user->setFirstName('Victor');
+	  $user->setEmail('victor@symfonycasts.com');
+
+	  $mailer = new Mailer($symfonyMailer, $entrypointLookup, $twig, $pdf);
 	  $mailer->sendWelcomeMessage($user);
   }
 }
