@@ -3,15 +3,29 @@ namespace App\Service;
 
 
 use App\Entity\User;
+use Knp\Snappy\Pdf;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\NamedAddress;
+use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
+use Twig\Environment;
 
 class Mailer {
 	private $mailer;
+	private $entrypointLookup;
+	private $twig;
+	private $pdf;
 
-	public function __construct(MailerInterface $mailer){
+	public function __construct(
+		MailerInterface $mailer,
+		EntrypointLookupInterface $entrypointLookup,
+		Environment $twig,
+		Pdf $pdf
+	){
 		$this->mailer = $mailer;
+		$this->entrypointLookup = $entrypointLookup;
+		$this->twig = $twig;
+		$this->pdf = $pdf;
 	}
 
 	public function sendWelcomeMessage(User $user){
@@ -23,6 +37,28 @@ class Mailer {
 			->context([
 				//'user' => $user
 			]);
+		;
+
+		$this->mailer->send($email);
+	}
+
+	public function sendAuthorWeeklyReportMessage(User $author, array $articles){
+		$html = $this->twig->render('email/author-weekly-report-pdf.html.twig', [
+			'articles' => $articles
+		]);
+		$this->entrypointLookup->reset();
+		$pdf = $this->pdf->getOutputFromHtml($html);
+
+		$email = (new TemplatedEmail())
+			->from(new NamedAddress('alienmailer@example.com', 'The Space Bar!'))
+			->to(new NamedAddress($author->getEmail(), $author->getFirstName()))
+			->subject('Your weekly report on the Space Bar!')
+			->htmlTemplate('email/author-weekly-report.html.twig')
+			->context([
+				'author' => $author,
+				'articles' => $articles
+			])
+			->attach($pdf, sprintf('weekly-report-%s.pdf', date('Y-m-d')));
 		;
 
 		$this->mailer->send($email);
