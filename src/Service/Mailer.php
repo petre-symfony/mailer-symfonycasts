@@ -28,7 +28,7 @@ class Mailer {
 		$this->pdf = $pdf;
 	}
 
-	public function sendWelcomeMessage(User $user){
+	public function sendWelcomeMessage(User $user): TemplatedEmail{
 		$email = (new TemplatedEmail())
 			->from(new NamedAddress('alienmailer@example.com', 'The Space Bar!'))
 			->to(new NamedAddress($user->getEmail(), $user->getFirstName()))
@@ -40,9 +40,11 @@ class Mailer {
 		;
 
 		$this->mailer->send($email);
+
+		return $email;
 	}
 
-	public function sendAuthorWeeklyReportMessage(User $author, array $articles){
+	public function sendAuthorWeeklyReportMessage(User $author, array $articles): TemplatedEmail{
 		$html = $this->twig->render('email/author-weekly-report-pdf.html.twig', [
 			'articles' => $articles
 		]);
@@ -62,5 +64,7 @@ class Mailer {
 		;
 
 		$this->mailer->send($email);
+
+		return $email;
 	}
 }
