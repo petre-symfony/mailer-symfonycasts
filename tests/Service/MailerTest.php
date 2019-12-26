@@ -6,13 +6,13 @@ use App\Entity\Article;
 use App\Entity\User;
 use App\Service\Mailer;
 use Knp\Snappy\Pdf;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\NamedAddress;
 use Symfony\WebpackEncoreBundle\Asset\EntrypointLookupInterface;
 use Twig\Environment;
 
-class MailerTest extends TestCase {
+class MailerTest extends KernelTestCase {
   public function testSendWelcomeMessage(){
 	  $symfonyMailer = $this->createMock(MailerInterface::class);
 	  $symfonyMailer->expects($this->once())
@@ -39,12 +39,14 @@ class MailerTest extends TestCase {
   }
 
 	public function testIntegrationSendAuthorWeeklyReportMessage(){
+		self::bootKernel();
+		
 		$symfonyMailer = $this->createMock(MailerInterface::class);
 		$symfonyMailer->expects($this->once())
 			->method('send');
 
-		$pdf = $this->createMock(Pdf::class);
-		$twig = $this->createMock(Environment::class);
+		$pdf = self::$container->get(Pdf::class);
+		$twig = self::$container->get(Environment::class);
 		$entrypointLookup = $this->createMock(EntrypointLookupInterface::class);
 
 		$user = new User();
@@ -55,5 +57,6 @@ class MailerTest extends TestCase {
 
 		$mailer = new Mailer($symfonyMailer, $entrypointLookup, $twig, $pdf);
 		$email = $mailer->sendAuthorWeeklyReportMessage($user, [$article]);
+		$this->assertCount(1, $email->getAttachments());
 	}
 }
