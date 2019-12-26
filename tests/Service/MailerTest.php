@@ -40,7 +40,7 @@ class MailerTest extends KernelTestCase {
 
 	public function testIntegrationSendAuthorWeeklyReportMessage(){
 		self::bootKernel();
-		
+
 		$symfonyMailer = $this->createMock(MailerInterface::class);
 		$symfonyMailer->expects($this->once())
 			->method('send');
@@ -58,5 +58,6 @@ class MailerTest extends KernelTestCase {
 		$mailer = new Mailer($symfonyMailer, $entrypointLookup, $twig, $pdf);
 		$email = $mailer->sendAuthorWeeklyReportMessage($user, [$article]);
 		$this->assertCount(1, $email->getAttachments());
+		var_dump($email->getAttachments());
 	}
 }
