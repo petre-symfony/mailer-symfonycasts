@@ -2,6 +2,7 @@
 
 namespace App\Tests\Service;
 
+use App\Entity\Article;
 use App\Entity\User;
 use App\Service\Mailer;
 use Knp\Snappy\Pdf;
@@ -36,4 +37,23 @@ class MailerTest extends TestCase {
 	  $this->assertSame('Victor', $namedAddresses[0]->getName());
 	  $this->assertSame('victor@symfonycasts.com', $namedAddresses[0]->getAddress());
   }
+
+	public function testIntegrationSendAuthorWeeklyReportMessage(){
+		$symfonyMailer = $this->createMock(MailerInterface::class);
+		$symfonyMailer->expects($this->once())
+			->method('send');
+
+		$pdf = $this->createMock(Pdf::class);
+		$twig = $this->createMock(Environment::class);
+		$entrypointLookup = $this->createMock(EntrypointLookupInterface::class);
+
+		$user = new User();
+		$user->setFirstName('Victor');
+		$user->setEmail('victor@symfonycasts.com');
+		$article = new Article();
+		$article->setTitle('Black Holes: Ultimate Party Pooper');
+
+		$mailer = new Mailer($symfonyMailer, $entrypointLookup, $twig, $pdf);
+		$email = $mailer->sendAuthorWeeklyReportMessage($user, [$article]);
+	}
 }
