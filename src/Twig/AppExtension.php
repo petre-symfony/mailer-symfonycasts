@@ -13,10 +13,12 @@ use Twig\TwigFunction;
 
 class AppExtension extends AbstractExtension implements ServiceSubscriberInterface {
   private $container;
+  private $publicDir;
 
-  public function __construct(ContainerInterface $container) {
+	public function __construct(ContainerInterface $container, string $publicDir) {
     $this->container = $container;
-  }
+		$this->publicDir = $publicDir;
+	}
 
   public function getFunctions(): array {
     return [
@@ -50,7 +52,10 @@ class AppExtension extends AbstractExtension implements ServiceSubscriberInterfa
 
 		$source = '';
 		foreach ($files as $file) {
+			$source .= file_get_contents($this->publicDir.'/'.$file);
 		}
+
+		return $source;
 	}
 
   public static function getSubscribedServices() {
